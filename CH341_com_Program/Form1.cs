@@ -19,22 +19,34 @@ namespace CH341_com_Program
             InitializeComponent();
         }
 
-        
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            uart = new Uart(serialPort1,Uart.DataReceiveMode.EventBased);
+            uart.DataReceived += OnDataReceived;
+
+            ui_cb_uart_portname();
+        }
+
+
         void ui_cb_uart_portname()
         {
             string[] ports = uart.uartGetPortname();
             cb_uart_portname.Items.Clear();
             cb_uart_portname.Items.AddRange(ports);
         }
-        
-        private void Form1_Load(object sender, EventArgs e)
+
+        private void OnDataReceived(string data)
         {
-            uart = new Uart(serialPort1);
-            ui_cb_uart_portname();
-
+            if (InvokeRequired)
+            {
+                Invoke(new Action(() => OnDataReceived(data)));
+            }
+            else
+            {
+                tb_uart_receive.Text += data;
+            }
         }
-
-
         private void uart_connect_btn_Click(object sender, EventArgs e)
         {
             if (uart.uartConnectCheck())
@@ -68,14 +80,19 @@ namespace CH341_com_Program
             }  
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void btn_uart_send_Click(object sender, EventArgs e)
         {
-            Console.WriteLine(cb_uart_baudrate.Text + "");
+            uart.uartWrite(tb_uart_write.Text);
         }
 
         private void cb_uart_portname_Click(object sender, EventArgs e)
         {
             ui_cb_uart_portname();
+        }
+
+        private void btn_uart_receive_Click(object sender, EventArgs e)
+        {
+            tb_uart_receive.Text += uart.uartReceive();
         }
     }
 }

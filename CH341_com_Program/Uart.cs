@@ -11,12 +11,19 @@ namespace CH341_com_Program
     public class Uart
     {
         private SerialPort _serialPort;
+        private DataReceiveMode _mode;
 
-        public Uart(SerialPort serialPort)
+        public event Action<string> DataReceived;
+        public enum DataReceiveMode
+        {
+            EventBased,
+            Manual
+        }
+        public Uart(SerialPort serialPort, DataReceiveMode mode)
         {
             _serialPort = serialPort;
+            _mode = mode;
         }
-
         public void uartWrite(string data)
         {
             if(_serialPort.IsOpen)
@@ -24,7 +31,6 @@ namespace CH341_com_Program
                 _serialPort.Write(data);
             }
         }
-
         public string uartReceive()
         {
             if(_serialPort.IsOpen)
@@ -33,13 +39,16 @@ namespace CH341_com_Program
             }
             return string.Empty;
         }
-
         public bool uartConnect(int baudRate, string portName)
         {
             try
             {
                 _serialPort.BaudRate = baudRate;
                 _serialPort.PortName = portName;
+                if (_mode == DataReceiveMode.EventBased)
+                {
+                    _serialPort.DataReceived += SerialPort_DataReceived;
+                }
                 _serialPort.Open();
             }
             catch
@@ -47,6 +56,15 @@ namespace CH341_com_Program
                 return false;
             }
             return true;
+        }
+        private void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            if (_serialPort.IsOpen)
+            {
+                string data = _serialPort.ReadExisting();
+                DataReceived?.Invoke(data);
+                Console.WriteLine("uart_data_received : " + data);
+            }
         }
         public bool uartDisconnect()
         {
@@ -60,7 +78,6 @@ namespace CH341_com_Program
             }
             return true;
         }
-
         public bool uartConnectCheck()
         {
             return _serialPort.IsOpen;
