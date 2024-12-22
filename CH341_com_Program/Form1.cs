@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -12,7 +13,6 @@ namespace CH341_com_Program
 {
     public partial class Form1 : Form
     {
-        private Uart uart;
 
         public Form1()
         {
@@ -23,11 +23,15 @@ namespace CH341_com_Program
         private void Form1_Load(object sender, EventArgs e)
         {
             uart = new Uart(serialPort1,Uart.DataReceiveMode.EventBased);
+            ch341_i2c = new CH341_I2C();
+
             uart.DataReceived += OnDataReceived;
 
             ui_cb_uart_portname();
         }
 
+        #region UART
+        private Uart uart;
 
         void ui_cb_uart_portname()
         {
@@ -93,6 +97,76 @@ namespace CH341_com_Program
         private void btn_uart_receive_Click(object sender, EventArgs e)
         {
             tb_uart_receive.Text += uart.uartReceive();
+        }
+        #endregion
+
+
+        #region I2C
+        private CH341_I2C ch341_i2c;
+        private Byte i2c_address;
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            if (ch341_i2c.i2cConnect())
+            {
+                lbl_deviceStatus_led.ForeColor = Color.Green;
+                btn_i2c_all_read.Enabled = btn_i2c_all_write.Enabled = true;
+                i2c_address = Convert.ToByte(tb_i2c_address.Text, 16);
+            }
+            else
+            {
+                lbl_deviceStatus_led.ForeColor = Color.Red;
+                btn_i2c_all_read.Enabled = btn_i2c_all_write.Enabled = false;
+            }
+        }
+        private void btn_i2c_all_write_Click(object sender, EventArgs e)
+        {
+            string s_test = tb_i2c_write.Text;
+            string[] s_split = s_test.Split(',', '\n', ' ');
+
+            for (int i = 0; i < s_split.Length; i++)
+            {
+                s_split[i] = s_split[i].Replace("\r", "");
+            }
+            for (int i = 0; i < s_split.Length; i++)
+            {
+                if (ch341_i2c.i2cConnect())
+                {
+                    ch341_i2c.i2cWrite(i2c_address, Convert.ToByte(s_split[i], 16), Convert.ToByte(s_split[i + 1], 16));
+                    Thread.Sleep(Convert.ToInt32(tb_i2c_write_interval.Text));
+                }
+                i++;
+            }
+        }
+
+        
+        private void btn_i2c_all_read_Click(object sender, EventArgs e)
+        {
+            string s_test = tb_i2c_read.Text;
+            string READ_DATA_ALL = "";
+            string[] s_split = s_test.Split('\n', ' ');
+            Byte READ_DATA;
+
+            for (int i = 0; i < s_split.Length; i++)
+            {
+                s_split[i] = s_split[i].Replace("\r", "");
+            }
+
+            for (int i = 0; i < s_split.Length; i++)
+            {
+                if (ch341_i2c.i2cConnect())
+                {
+                    ch341_i2c.i2cRead(i2c_address, Convert.ToByte(s_split[i], 16), out READ_DATA);
+                    READ_DATA_ALL += "0x" + Convert.ToString(READ_DATA, 16) + "\n";
+                    lbl_i2c_read_result.Text = READ_DATA_ALL;
+                    Thread.Sleep(Convert.ToInt32(tb_i2c_read_interval.Text));
+                }
+            }
+        }
+        #endregion
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            ch341_i2c.i2cConnectClose();
         }
     }
 }
