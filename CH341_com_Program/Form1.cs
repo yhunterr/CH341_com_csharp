@@ -24,7 +24,7 @@ namespace CH341_com_Program
         {
             uart = new Uart(serialPort1,Uart.DataReceiveMode.EventBased);
             ch341_i2c = new CH341_I2C();
-
+            ch341_spi = new CH341_SPI();
             uart.DataReceived += OnDataReceived;
 
             ui_cb_uart_portname();
@@ -99,8 +99,6 @@ namespace CH341_com_Program
             tb_uart_receive.Text += uart.uartReceive();
         }
         #endregion
-
-
         #region I2C
         private CH341_I2C ch341_i2c;
         private Byte i2c_address;
@@ -108,13 +106,13 @@ namespace CH341_com_Program
         {
             if (ch341_i2c.i2cConnect())
             {
-                lbl_deviceStatus_led.ForeColor = Color.Green;
+                lbl_deviceStatus_led2.ForeColor = lbl_deviceStatus_led.ForeColor = Color.Green;
                 btn_i2c_all_read.Enabled = btn_i2c_all_write.Enabled = true;
                 i2c_address = Convert.ToByte(tb_i2c_address.Text, 16);
             }
             else
             {
-                lbl_deviceStatus_led.ForeColor = Color.Red;
+                lbl_deviceStatus_led2.ForeColor = lbl_deviceStatus_led.ForeColor = Color.Red;
                 btn_i2c_all_read.Enabled = btn_i2c_all_write.Enabled = false;
             }
         }
@@ -164,9 +162,39 @@ namespace CH341_com_Program
         }
         #endregion
 
+
+        #region SPI
+        private CH341_SPI ch341_spi;
+
+        private void btn_spi_send_Click(object sender, EventArgs e)
+        {
+            string hexText = tb_spi_write.Text.Trim();
+            if (hexText.StartsWith("0x") || hexText.StartsWith("0X"))
+            {
+                hexText = hexText.Substring(2);
+            }
+
+            byte oneByte = Convert.ToByte(hexText, 16);
+            byte[] b_test = new byte[] { oneByte };
+
+            Console.WriteLine(b_test[0]);
+
+            if (ch341_spi.spiConnect())
+            {
+                ch341_spi.spiWrite(ref b_test);
+                int value = int.Parse(b_test[0]+"");
+                string s_ead = "0x" + value.ToString("X2");
+
+                tb_spi_read.Text = s_ead;
+            }
+        }
+        #endregion
+
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             ch341_i2c.i2cConnectClose();
         }
+
+
     }
 }

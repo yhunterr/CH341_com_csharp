@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CH341_SPI.cs" />
     <Compile Include="CH341_I2C.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

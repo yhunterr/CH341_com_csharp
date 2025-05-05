@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using CH341;
@@ -8,26 +9,31 @@ using CH341;
 
 namespace CH341_com_Program
 {
-    public class CH341_I2C
+    public class CH341_SPI
     {
+        [DllImport("CH341DLL.DLL")]
+        public static extern bool CH341StreamSPI4(int index, int iChipSelect, int iLength, byte[] buf);
+
+
         CH341A ch = new CH341A();
 
-        public bool i2cConnect()
+        public bool spiConnect()
         {
             return ch.OpenDevice();
         }
 
-        public void i2cWrite(byte address, byte data1, byte data2)
+        public void spiWrite(ref byte[] ioBuffer)
         {
-            ch.WriteI2C(address, data1, data2);
+            spiSetStream(0x81);
+            ch.StreamSPI4(0x80,ref ioBuffer);
         }
         
-        public void i2cRead(byte address, byte data, out byte data2)
+        public void spiRead(byte address, byte data, out byte data2)
         {
             ch.ReadI2C(address, data, out data2);
         }
 
-        public void i2cSetStream(byte data)
+        public void spiSetStream(byte data)
         {
             // Bit 1 - Bit 0: I2C interface speed / SCL frequency
             //  00 = low speed / 20KHz
@@ -43,9 +49,9 @@ namespace CH341_com_Program
             ch.SetStream(data);
         }
 
-        public void i2cConnectClose()
+        public void spiConnectClose()
         {
-            if(i2cConnect())
+            if(spiConnect())
             {
                 ch.CloseDevice();
             }

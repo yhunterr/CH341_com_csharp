@@ -59,10 +59,19 @@ namespace CH341_com_Program
             this.btn_i2c_all_write = new System.Windows.Forms.Button();
             this.lbl_deviceStatus_led = new System.Windows.Forms.Label();
             this.lbl_deviceStatus = new System.Windows.Forms.Label();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.lbl_deviceStatus_led2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.btn_spi_send = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
+            this.tb_spi_write = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.tb_spi_read = new System.Windows.Forms.TextBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            this.tabPage3.SuspendLayout();
             this.SuspendLayout();
             // 
             // btn_uart_connect
@@ -176,6 +185,7 @@ namespace CH341_com_Program
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Location = new System.Drawing.Point(11, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -379,11 +389,93 @@ namespace CH341_com_Program
             this.lbl_deviceStatus.TabIndex = 17;
             this.lbl_deviceStatus.Text = "Device Status";
             // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.tb_spi_read);
+            this.tabPage3.Controls.Add(this.label4);
+            this.tabPage3.Controls.Add(this.tb_spi_write);
+            this.tabPage3.Controls.Add(this.label2);
+            this.tabPage3.Controls.Add(this.btn_spi_send);
+            this.tabPage3.Controls.Add(this.lbl_deviceStatus_led2);
+            this.tabPage3.Controls.Add(this.label3);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(414, 264);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "SPI";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // lbl_deviceStatus_led2
+            // 
+            this.lbl_deviceStatus_led2.AutoSize = true;
+            this.lbl_deviceStatus_led2.Font = new System.Drawing.Font("굴림", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lbl_deviceStatus_led2.Location = new System.Drawing.Point(367, 19);
+            this.lbl_deviceStatus_led2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lbl_deviceStatus_led2.Name = "lbl_deviceStatus_led2";
+            this.lbl_deviceStatus_led2.Size = new System.Drawing.Size(17, 12);
+            this.lbl_deviceStatus_led2.TabIndex = 20;
+            this.lbl_deviceStatus_led2.Text = "●";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(284, 19);
+            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(82, 12);
+            this.label3.TabIndex = 19;
+            this.label3.Text = "Device Status";
+            // 
             // timer1
             // 
             this.timer1.Enabled = true;
             this.timer1.Interval = 1000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // btn_spi_send
+            // 
+            this.btn_spi_send.Location = new System.Drawing.Point(195, 35);
+            this.btn_spi_send.Name = "btn_spi_send";
+            this.btn_spi_send.Size = new System.Drawing.Size(75, 23);
+            this.btn_spi_send.TabIndex = 21;
+            this.btn_spi_send.Text = "SEND";
+            this.btn_spi_send.UseVisualStyleBackColor = true;
+            this.btn_spi_send.Click += new System.EventHandler(this.btn_spi_send_Click);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(3, 38);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(80, 12);
+            this.label2.TabIndex = 22;
+            this.label2.Text = "WRITE_DATA";
+            // 
+            // tb_spi_write
+            // 
+            this.tb_spi_write.Location = new System.Drawing.Point(89, 35);
+            this.tb_spi_write.Name = "tb_spi_write";
+            this.tb_spi_write.Size = new System.Drawing.Size(100, 21);
+            this.tb_spi_write.TabIndex = 23;
+            this.tb_spi_write.Text = "0x01";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(3, 65);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(75, 12);
+            this.label4.TabIndex = 22;
+            this.label4.Text = "READ_DATA";
+            // 
+            // tb_spi_read
+            // 
+            this.tb_spi_read.Location = new System.Drawing.Point(89, 62);
+            this.tb_spi_read.Name = "tb_spi_read";
+            this.tb_spi_read.ReadOnly = true;
+            this.tb_spi_read.Size = new System.Drawing.Size(100, 21);
+            this.tb_spi_read.TabIndex = 23;
             // 
             // Form1
             // 
@@ -400,6 +492,8 @@ namespace CH341_com_Program
             this.tabPage1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
+            this.tabPage3.ResumeLayout(false);
+            this.tabPage3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -436,6 +530,14 @@ namespace CH341_com_Program
         private System.Windows.Forms.Button btn_i2c_all_write;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox tb_i2c_address;
+        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.Label lbl_deviceStatus_led2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button btn_spi_send;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox tb_spi_read;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox tb_spi_write;
     }
 }
 
